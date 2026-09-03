@@ -103,4 +103,5 @@ void roll(GameState &g) {
 
 void hold(GameState &g) {
     g.turn_over = true;
+    
 }
