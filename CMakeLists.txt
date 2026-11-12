@@ -10,6 +10,4 @@ add_executable(PigDiceMultiplayer
         Turn.cpp
         PDGame.cpp
         PDGameV2.cpp
-        PDGameV2.h
-        PDGameV2.cpp
 )
