@@ -1,6 +1,7 @@
-#include "PDGame.h"
+#include "PDGameV2.h"
 
 int main() {
-    PDGame pdGame;
+    PDGameV2 pdGame;
+    pdGame.playGame();
     return 0;
 }
