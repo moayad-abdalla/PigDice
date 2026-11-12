@@ -1,6 +1,7 @@
 #include "PDGameV2.h"
 #include <iostream>
 #include <limits>
+#include <stdexcept>
 
 using namespace std;
 
@@ -8,30 +9,36 @@ PDGameV2::PDGameV2() {
     int playerCount = 0;
 
     while (playerCount < 2) {
-        cout << "How many people are playing? ";
+        try {
+            cout << "How many people are playing? ";
 
-        if (!(cin >> playerCount)) {
-            if (cin.eof()) {
-                return;
-            }
+            if (!(cin >> playerCount)) {
+                if (cin.eof()) {
+                    return;
+                }
 
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            playerCount = 0;
-        } else {
-            string remainingInput;
-            getline(cin, remainingInput);
-
-            if (remainingInput.find_first_not_of(" \t\r") != string::npos) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 playerCount = 0;
+            } else {
+                string remainingInput;
+                getline(cin, remainingInput);
+
+                if (remainingInput.find_first_not_of(" \t\r") != string::npos) {
+                    playerCount = 0;
+                }
             }
-        }
-        if (playerCount < 2) {
-            cout << "Enter a whole number of at least 2.\n";
+
+            if (playerCount < 2) {
+                throw invalid_argument("Enter a whole number of at least 2.");
+            }
+        } catch (const invalid_argument& error) {
+            cout << error.what() << '\n';
         }
     }
 
     int anonymousCount = 0;
+
     for (int i = 0; i < playerCount; ++i) {
         string name;
 
@@ -40,6 +47,7 @@ PDGameV2::PDGameV2() {
         if (!getline(cin, name)) {
             return;
         }
+
         if (name.find_first_not_of(" \t\r") == string::npos) {
             ++anonymousCount;
             name = "Anonymous Player " + to_string(anonymousCount);
@@ -57,6 +65,7 @@ void PDGameV2::displayRules() {
     cout << "* If you roll a 1, you lose all points for the turn.\n";
     cout << "* If you hold, you save all points for the turn.\n";
 }
+
 void PDGameV2::displayScores() const {
     cout << '\n';
 
@@ -64,6 +73,7 @@ void PDGameV2::displayScores() const {
         cout << m_playerNames[i]
              << " (Score:" << m_playerScores[i] << ") | ";
     }
+
     cout << '\n';
 }
 
@@ -73,6 +83,7 @@ void PDGameV2::playGame() {
     }
 
     displayRules();
+
     int round = 1;
 
     while (!m_gameOver) {
@@ -93,8 +104,10 @@ void PDGameV2::playGame() {
             if (m_playerScores[i] >= 50) {
                 m_gameOver = true;
             }
-// Finish the round so every player gets the same number of turns.
+
+            // Finish the round so every player gets the same number of turns.
         }
+
         ++round;
     }
 
